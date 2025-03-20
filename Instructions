@@ -1,0 +1,104 @@
+This guide will walk you through setting up and deploying the AnimeSpot e-commerce website using AWS services. No prior experience is required! Just follow the steps carefully.
+
+---
+## **1. Clone the Repository (Download the Project)**
+If you haven't already, download the project from GitHub to your computer:
+
+1. Open a **Command Prompt (Windows)** or **Terminal (Mac/Linux)**.
+2. Type the following command and press **Enter**:
+   ```sh
+   git clone https://github.com/your-username/your-repo.git
+   ```
+3. Move into the project folder:
+   ```sh
+   cd your-repo
+   ```
+
+---
+## **2. Backend Setup (AWS Lambda & DynamoDB)**
+### **Step 1: Create DynamoDB Tables (For Storing Products & Orders)**
+#### **Create the `Products` Table**
+1. Go to **AWS Management Console** → Search for **DynamoDB** and click it.
+2. Click **Create Table**.
+3. In the **Table name** field, type `Products`.
+4. In the **Partition key** field, type `id` and set the type to **String**.
+5. Click **Create table**.
+
+#### **Create the `Customers` Table**
+1. Click **Create Table** again.
+2. In the **Table name** field, type `Customers`.
+3. In the **Partition key** field, type `customerId` and set the type to **String**.
+4. Click **Create table**.
+
+### **Step 2: Deploy AWS Lambda Functions**
+Lambda functions will process product and customer data.
+
+1. Open **AWS Lambda** (search for it in AWS Console).
+2. Click **Create Function**.
+3. Select **Author from Scratch**.
+4. Enter the function name (e.g., `storecustomer` for customer orders).
+5. Set the **Runtime** to `Node.js 18.x`.
+6. Click **Create Function**.
+7. In the function page, scroll down to **Code** and upload one of these files:
+   - `storecustomer.mjs` (Handles customer orders)
+   - `addproducts.mjs` (Adds new products)
+   - `my-store.mjs` (Fetches product listings)
+8. Click **Deploy**.
+9. Repeat these steps for the other two functions.
+
+### **Step 3: Attach Policies to Lambda for DynamoDB Access**
+1. Go to **AWS IAM** (search for it in AWS Console).
+2. Click **Roles** in the left menu.
+3. Find the role assigned to your Lambda function (it usually starts with `AWSLambda`).
+4. Click the role, then click **Attach Policies**.
+5. Search for `AmazonDynamoDBFullAccess` and select it.
+6. Click **Attach policy**.
+
+### **Step 4: Connect Lambda to API Gateway**
+API Gateway allows your frontend to communicate with the backend.
+
+1. Open **AWS API Gateway** (search for it in AWS Console).
+2. Click **Create API** → Select **HTTP API**.
+3. Click **Create**.
+4. Click **Add Integration** and select **Lambda Function**.
+5. Choose your function (e.g., `storecustomer`).
+6. Repeat steps 4–5 for the other two functions (`addproducts` and `my-store`).
+7. Click **Deploy API** and copy the **invoke URLs** (you'll need them later).
+
+---
+## **3. Frontend Setup (Website Interface)**
+### **Step 1: Update API URLs in `Animespot.html`**
+
+1. Open the file `Animespot.html` using a text editor (e.g., Notepad++, VS Code).
+2. Find the `fetch()` calls.
+3. Replace the API URLs with the ones you copied from API Gateway.
+4. Save the file.
+
+### **Step 2: Host the Website (Optional)**
+You can make the website live using AWS S3.
+
+1. Open **AWS S3**.
+2. Click **Create Bucket**.
+3. Set a **unique bucket name** (e.g., `anime-spot-store`).
+4. Click **Create Bucket**.
+5. Upload `Animespot.html`.
+6. Enable public access (Go to **Permissions** → **Block Public Access** → Uncheck the block options → Save).
+7. Copy the **public URL** to share your website.
+
+---
+## **4. Running the Website Locally (On Your Computer)**
+To test your website before publishing:
+
+1. Open the `Animespot.html` file in your web browser.
+2. Check if products load (this means the API is working).
+3. Try adding products to the cart and checkout.
+
+---
+## **5. Future Improvements**
+- Add a **login system** for admins.
+- Integrate a **payment gateway**.
+- Improve the **design with CSS frameworks** like Bootstrap.
+
+---
+### 🎉 **Congratulations! You've successfully set up the AnimeSpot store!**
+
